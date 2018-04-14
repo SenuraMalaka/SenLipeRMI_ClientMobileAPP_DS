@@ -6,4 +6,6 @@ package com.example.senura.lipermitest1;
 
 public interface TestService {
     public String getResponse(String data);
+    public boolean isHavingHostURL();
+    public String getURL();
 }
