@@ -1,8 +1,8 @@
 package com.example.senura.lipermitest1;
 
-import android.os.AsyncTask;
-import android.os.Looper;
+
 import android.os.StrictMode;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,19 +15,24 @@ import android.widget.Toast;
 import net.sf.lipermi.handler.CallHandler;
 import net.sf.lipermi.net.Client;
 
-import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity{
 
 
     private Button btnStartCon;
-    //private static int count=0;
-    private static TestService testService;
+    private Button sendRes;
+
+    public static TestService remoteObject;
     private static Client client;
-    //private AsyncTask atask=null;
-    private TextView statusText=null;
+
+    private static TextView statusText=null;
+
+    private static final String mainServerIPAddress="192.168.1.4";
+    private static final int mainServerPort=58882;
 
 
     @Override
@@ -42,6 +47,8 @@ public class MainActivity extends AppCompatActivity{
         }
 
         btnStartCon=(Button) findViewById(R.id.buttonStartCon);
+        sendRes=(Button) findViewById(R.id.buttonGetResponse);
+
         statusText =(TextView) findViewById(R.id.textViewStatus);
 
 
@@ -51,46 +58,44 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View view) {
 
 
-
-                try {
-                    Log.e("mainACT","inside try" );
-                    setStatusText("inside try");
+                TimerControllers.initGlobalVariables();
+                TimerContainer.setTimerToCheckServerAvailability();
 
 
-                    Toast.makeText(MainActivity.this, "Inside conn my nigga", Toast.LENGTH_SHORT).show();
-                    CallHandler callHandler = new CallHandler();
 
-                    Log.e("mainACT","after callhandler" );
-                    setStatusText("after callhandler");
+//                try {
+//                    Log.e("mainACT","inside try" );
+//                    setStatusText("inside try");
+//
+//
+//                    Toast.makeText(MainActivity.this, "Inside conn my nigga", Toast.LENGTH_SHORT).show();
+//                    CallHandler callHandler = new CallHandler();
+//
+//                    Log.e("mainACT","after callhandler" );
+//                    setStatusText("after callhandler");
+//
+//
+//                    client = new Client(mainServerIPAddress, mainServerPort, callHandler);
+//
+//                    Log.e("mainACT","after new client" );
+//                    setStatusText("after newclient");
+//
+//                    remoteObject = (TestService) client.getGlobal(TestService.class);
+//
+//                    Log.e("mainACT","after testservice" );
+//                    setStatusText("after testservice");
+//
+//                    sendRegSen();
+//                    Log.e("mainACT","after sendregsen" );
+//                    setStatusText("after sendregsen func");
+//
+//                    Toast.makeText(MainActivity.this, "END conn my nigga", Toast.LENGTH_SHORT).show();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    setStatusText("Client is not online");
+//                }
 
 
-                    client = new Client("192.168.1.4", 58882, callHandler);
-
-                    Log.e("mainACT","after new client" );
-                    setStatusText("after newclient");
-
-                    testService = (TestService) client.getGlobal(TestService.class);
-
-                    Log.e("mainACT","after testservice" );
-                    setStatusText("after testservice");
-
-                    String msg = "Test";//testService.getResponse("qwe");
-                    //Toast.makeText(MainActivity.this, testService.getResponse("abc"), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-
-                    Log.e("mainACT","afterToast" );
-                    setStatusText("after toast");
-
-                    //count++;
-                    sendRegSen();
-                    Log.e("mainACT","after sendregsen" );
-                    setStatusText("after sendregsen func");
-
-                    Toast.makeText(MainActivity.this, "END conn my nigga", Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    setStatusText("\nError:\n"+e.getMessage()+"\n");
-                }
 
 
             }
@@ -98,6 +103,13 @@ public class MainActivity extends AppCompatActivity{
 
 
 
+        sendRes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                statusText.setText(statusTextString);
+                GETRequestHandlers.mainMenuContext=MainActivity.this;
+            }
+        });
 
 
 
@@ -107,22 +119,31 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-    private void sendRegSen(){
+//    private void sendRegSen(){
+//
+//
+//        try {
+//
+//            String responseText = remoteObject.getResponse("sen android");
+//
+//            Toast.makeText(MainActivity.this, responseText, Toast.LENGTH_SHORT).show();
+//            setStatusText("Response got : "+responseText);
+//
+//
+//        }catch (Exception ex){
+//            setStatusText("\nError:\n"+ex.getMessage()+"\n");
+//        }
+//
+//
+//    }
 
 
-        try {
-
-            String responseText = testService.getResponse("sen android");
-
-            Toast.makeText(MainActivity.this, responseText, Toast.LENGTH_SHORT).show();
-            setStatusText("Response got : "+responseText);
 
 
-        }catch (Exception ex){
-            setStatusText("\nError:\n"+ex.getMessage()+"\n");
-        }
 
 
+
+    private void closeTheConnection(){
         try {
             client.close();
             setStatusText("client closed");
@@ -134,75 +155,30 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-    private void setStatusText(String textStatus){
-        statusText.append(textStatus+"\n");
+    public static void setStatusText(String textStatus){
+        //statusText.append(""+"\n");
+        statusTextString+=textStatus+"\n";
+    }
+
+    public static String statusTextString="";
+
+    private static void setStatusChangeTimer(){
+        final Timer timer = new Timer();
+        TimerTask myTask = new TimerTask() {
+            @Override
+            public void run() {
+
+                statusText.setText(statusTextString);
+
+
+            }
+        };
+
+        timer.schedule(myTask, 1000, 1000);
     }
 
 
 
-
-
-
-
-
-
-
-
-//    class Conn extends AsyncTask<Void, Void, MainActivity> {
-//
-//        @Override
-//        protected MainActivity doInBackground(Void... params) {
-//            Looper.prepare();
-//
-//            Log.e("mainACT","inside async task" );
-//
-//            try {
-//                Log.e("mainACT","inside try" );
-//                Toast.makeText(MainActivity.this, "Inside conn my nigga", Toast.LENGTH_SHORT).show();
-//                CallHandler callHandler = new CallHandler();
-//                Log.e("mainACT","after callhandler" );
-//                client = new Client("192.168.1.4", 58882, callHandler);
-//                Log.e("mainACT","after new client" );
-//                testService = (TestService) client.getGlobal(TestService.class);
-//                Log.e("mainACT","after testservice" );
-//                String msg = "Test";//testService.getResponse("qwe");
-//                //Toast.makeText(MainActivity.this, testService.getResponse("abc"), Toast.LENGTH_SHORT).show();
-//                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-//
-//                Log.e("mainACT","afterToast" );
-//
-//                //count++;
-//                sendRegSen();
-//                Log.e("mainACT","after sendregsen" );
-//                Toast.makeText(MainActivity.this, "END conn my nigga", Toast.LENGTH_SHORT).show();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            Looper.loop();
-//            return null;
-//        }
-//
-//
-//
-//
-//
-//        private void sendRegSen(){
-//
-//            Toast.makeText(MainActivity.this, testService.getResponse("ycma boys"), Toast.LENGTH_SHORT).show();
-//            Toast.makeText(MainActivity.this, "count if inside", Toast.LENGTH_SHORT).show();
-//            try {
-//                client.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//
-//
-//
-//
-//
-//    }
 
 
 
