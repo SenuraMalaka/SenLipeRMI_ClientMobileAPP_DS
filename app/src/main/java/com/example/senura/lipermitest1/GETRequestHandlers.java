@@ -30,18 +30,59 @@ public class GETRequestHandlers extends TimerContainer{
 
 
 
-    public static void sendGet(String urlToRead){
+//    public static void sendGet(String urlToRead){
+//
+//
+//
+//        try {
+//            urlToRead=getHTML(urlToRead);
+//        } catch (Exception ex) {
+//            //
+//        }
+//
+//        MainActivity.setStatusText(urlToRead);
+//    }
 
 
 
-        try {
-            urlToRead=getHTML(urlToRead);
-        } catch (Exception ex) {
-            //
-        }
-
-        MainActivity.setStatusText(urlToRead);
-    }
+//    public static boolean sendGetsToCalculateTimeElapsed(String urlToRead){
+//
+//        MainActivity.setStatusText("ClientConnection.isgetCountCalculated >> "+isgetCountCalculated);
+//        MainActivity.setStatusText("getcount >> "+getCount);
+//        MainActivity.setStatusText("\n\n");
+//
+//        if(!isgetCountCalculated){
+//
+//            try {
+//                urlToRead=getHTML(urlToRead);
+//            } catch (Exception ex) {
+//                //
+//            }
+//
+//            getCount++;
+//
+//            long timeElapsed=System.currentTimeMillis()-startMilisecs;
+//
+//            //measuring for 10secs
+//            if((timeElapsed/1000)>10 && !isgetCountCalculated){
+//                isgetCountCalculated=true;
+//                MainActivity.setStatusText("get count = "+getCount+" gets per 10secs");
+//
+//                ClientControllerCon.setControllerVar(getCount, getIpAddressOfThis(),getHostNameOfThis());////////newnewnew
+//
+//                //re init
+//                getCount=0; startMilisecs=0;
+//
+//                ClientControllerCon.start();
+//
+//                return true;//10 secs gone
+//            }
+//
+//
+//        }
+//
+//        return false;
+//    }
 
 
 
@@ -82,6 +123,35 @@ public class GETRequestHandlers extends TimerContainer{
         }
 
         return false;
+    }
+
+
+
+
+
+    public static boolean sendGets(String url,int amount){
+        int failures=0;
+        MainActivity.setStatusText("sendGets() ran");
+
+        int successfulGetCounts=0;
+
+        for(int i=0;i<amount;i++){
+            try {
+                MainActivity.setStatusText(i+" getHTML is :"+getHTML(url));
+                successfulGetCounts++;
+
+            } catch (Exception ex) {
+                failures++;
+            }
+        }
+
+        ClientControllerCon.sendGetLoopFinishedToControlServer(successfulGetCounts, getIpAddressOfThis(), getHostNameOfThis());
+
+        MainActivity.setStatusText("sendGets() finished");
+
+
+        return (failures<(amount/2));
+
     }
 
 

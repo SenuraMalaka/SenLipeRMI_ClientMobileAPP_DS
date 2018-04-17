@@ -64,6 +64,32 @@ public class ClientControllerCon {
 
 
 
+    public static int takeNumOfDDOSToBeExcecuted(){
+        int ddosNos=0;
+
+        if(remoteObject.isProposedDDOSCountSet()){
+            ddosNos=remoteObject.getNumofDDOSToBeExcecuted(myIP);
+
+            MainActivity.setStatusText(" takeNumOfDDOSToBeExcecuted returned = "+ddosNos);
+
+
+            if(myGETCount>ddosNos)
+                System.out.println("Provided ddos count is lower, thus");
+
+        }
+
+        return ddosNos;
+    }
+
+
+
+
+    public static void sendGetLoopFinishedToControlServer(int getCount, String IPAddress, String hostName){
+        remoteObject.sendGetDone(getCount, IPAddress, hostName);
+    }
+
+
+
     public static void setControllerVar(int count, String ip, String HName){
         myGETCount=count;
         myIP=ip;

