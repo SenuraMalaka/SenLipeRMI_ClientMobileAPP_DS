@@ -66,7 +66,7 @@ public class TimerContainer extends TimerControllers{
             }
         };
 
-        timer.schedule(myTask, 1000, 1000);
+        timer.schedule(myTask, 3000, 3000);
     }
 
 
@@ -83,7 +83,7 @@ public class TimerContainer extends TimerControllers{
             }
         };
 
-        timer.schedule(myTask, 1000, 1000);
+        timer.schedule(myTask, 3000, 3000);
     }
 
 
@@ -105,7 +105,7 @@ public class TimerContainer extends TimerControllers{
             }
         };
 
-        timer.schedule(myTask, 1000, 1000);//4000
+        timer.schedule(myTask, 4000, 4000);//4000
     }
 
 

@@ -23,15 +23,15 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity{
 
 
-    private Button btnStartCon;
-    private Button sendRes;
+    private static Button btnStartCon;
+    private static Button sendRes;
 
     public static TestService remoteObject;
     private static Client client;
 
     private static TextView statusText=null;
 
-    private static final String mainServerIPAddress="192.168.1.4";
+    private static final String mainServerIPAddress="172.20.8.65";//"192.168.1.4";
     private static final int mainServerPort=58882;
 
 
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity{
 
         btnStartCon=(Button) findViewById(R.id.buttonStartCon);
         sendRes=(Button) findViewById(R.id.buttonGetResponse);
+        sendRes.setEnabled(false);
 
         statusText =(TextView) findViewById(R.id.textViewStatus);
 
@@ -60,6 +61,8 @@ public class MainActivity extends AppCompatActivity{
 
                 TimerControllers.initGlobalVariables();
                 TimerContainer.setTimerToCheckServerAvailability();
+                sendRes.setEnabled(true);
+                btnStartCon.setEnabled(false);
 
 
 
@@ -116,6 +119,15 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
+    public static void hideTheStartConnectionButton(){
+        btnStartCon.setEnabled(false);
+    }
+
+    public static void showTheCheckStatusButton(){
+        sendRes.setEnabled(true);
+    }
+
+
 
 
 
@@ -157,7 +169,7 @@ public class MainActivity extends AppCompatActivity{
 
     public static void setStatusText(String textStatus){
         //statusText.append(""+"\n");
-        statusTextString+=textStatus+"\n";
+        statusTextString+=textStatus+"\n:\nV";
     }
 
     public static String statusTextString="";
@@ -167,10 +179,7 @@ public class MainActivity extends AppCompatActivity{
         TimerTask myTask = new TimerTask() {
             @Override
             public void run() {
-
                 statusText.setText(statusTextString);
-
-
             }
         };
 

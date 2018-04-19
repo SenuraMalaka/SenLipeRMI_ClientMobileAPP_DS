@@ -100,6 +100,7 @@ public class TimerControllers {
         try {
             client = new Client(remoteHost, portWasBinded, callHandler);
             isServerCameOnline=true;
+
         } catch (IOException ex) {
             MainActivity.setStatusText(TimeClass.getTime()+" server is not online");
         }
